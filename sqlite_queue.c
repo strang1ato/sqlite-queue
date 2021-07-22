@@ -22,7 +22,7 @@ __attribute__((destructor)) void destroy(void)
   sqlite3_close(db);
   pthread_mutex_destroy(&lock);
   close(socket_fd);
-  unlink("/tmp/sqlite.socket");
+  unlink("/tmp/sqlite-queue.socket");
 }
 
 int main(int argc, char *argv[])
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
   struct sockaddr_un socket_address;
   socket_address.sun_family = AF_UNIX;
-  strcpy(socket_address.sun_path, "/tmp/sqlite.socket");
+  strcpy(socket_address.sun_path, "/tmp/sqlite-queue.socket");
 
   if (bind(socket_fd, (const struct sockaddr *) &socket_address, sizeof(socket_address)) == -1) {
     exit(EXIT_FAILURE);
