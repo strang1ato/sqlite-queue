@@ -1,13 +1,13 @@
-#include <sys/socket.h>
-#include <sys/un.h>
+#include <pthread.h>
+#include <signal.h>
+#include <sqlite3.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <sys/un.h>
 #include <time.h>
-#include <sqlite3.h>
-#include <pthread.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <signal.h>
 
 sqlite3 *db;
 int socket_fd;
