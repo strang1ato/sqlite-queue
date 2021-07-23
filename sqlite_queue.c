@@ -37,11 +37,13 @@ int main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
   if (sqlite3_open(argv[1], &db) != SQLITE_OK) {
+    dprintf(2, "sqlite3_open failed\n");
     exit(EXIT_FAILURE);
   }
 
   socket_fd = socket(AF_UNIX, SOCK_SEQPACKET, 0);
   if (socket_fd == -1) {
+    dprintf(2, "socket failed\n");
     exit(EXIT_FAILURE);
   }
 
@@ -50,19 +52,23 @@ int main(int argc, char *argv[])
   strcpy(socket_address.sun_path, "/tmp/sqlite-queue.socket");
 
   if (bind(socket_fd, (const struct sockaddr *) &socket_address, sizeof(socket_address)) == -1) {
+    dprintf(2, "bind failed\n");
     exit(EXIT_FAILURE);
   }
 
   if (listen(socket_fd, 40) == -1) {
+    dprintf(2, "listen failed\n");
     exit(EXIT_FAILURE);
   }
 
   if (pthread_mutex_init(&lock, NULL) != 0) {
+    dprintf(2, "pthread_mutex_init failed\n");
     exit(EXIT_FAILURE);
   }
 
   pthread_t executor;
   if (pthread_create(&executor, NULL, &execute_queries, NULL)) {
+    dprintf(2, "pthread_create failed\n");
     exit(EXIT_FAILURE);
   }
 
@@ -72,6 +78,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < 40; i++) {
       if (!handlers[i]) {
         if (pthread_create(&handlers[i], NULL, &handle_connection, (void *)&connected_socket_fd)) {
+          dprintf(2, "pthread_create failed\n");
           exit(EXIT_FAILURE);
         }
         break;
@@ -107,10 +114,12 @@ void *handle_connection(void *arg)
     char string_query_len[10];
     int ret = read(connected_socket_fd, string_query_len, 10);
     if (ret == -1) {
+      dprintf(2, "read failed\n");
       exit(EXIT_FAILURE);
     }
     int query_len = atoi(string_query_len);
     if (!query_len) {
+      dprintf(2, "atoi failed\n");
       exit(EXIT_FAILURE);
     }
 
@@ -120,6 +129,7 @@ void *handle_connection(void *arg)
       if (!messages[i]) {
         messages[i] = malloc(query_len * sizeof(char));
         if (read(connected_socket_fd, messages[i], query_len) == -1) {
+          dprintf(2, "read failed\n");
           exit(EXIT_FAILURE);
         }
         break;
