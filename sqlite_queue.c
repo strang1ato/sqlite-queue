@@ -117,6 +117,15 @@ void *handle_connection(void *arg)
       dprintf(2, "read failed\n");
       exit(EXIT_FAILURE);
     }
+
+    int end = 0;
+    for (int i = 0; i < 10; i++) {
+      if (string_query_len[i] == 'e' || end) {
+        string_query_len[i] = 0;
+        end = 1;
+      }
+    }
+
     int query_len = atoi(string_query_len);
     if (!query_len) {
       dprintf(2, "atoi failed\n");
