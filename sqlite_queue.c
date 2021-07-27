@@ -112,8 +112,8 @@ void *handle_connection(void *arg)
 {
   int connected_socket_fd = *(int *)arg;
   while (1) {
-    char string_query_len[10];
-    int ret = read(connected_socket_fd, string_query_len, 10);
+    char query_len_str[10];
+    int ret = read(connected_socket_fd, query_len_str, 10);
     if (ret == -1) {
       dprintf(2, "read failed\n");
       exit(EXIT_FAILURE);
@@ -121,13 +121,13 @@ void *handle_connection(void *arg)
 
     int end = 0;
     for (int i = 0; i < 10; i++) {
-      if (string_query_len[i] == 'e' || end) {
-        string_query_len[i] = 0;
+      if (query_len_str[i] == 'e' || end) {
+        query_len_str[i] = 0;
         end = 1;
       }
     }
 
-    int query_len = atoi(string_query_len);
+    int query_len = atoi(query_len_str);
     if (!query_len) {
       dprintf(2, "atoi failed\n");
       exit(EXIT_FAILURE);
