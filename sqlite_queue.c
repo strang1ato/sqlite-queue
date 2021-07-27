@@ -1,4 +1,3 @@
-#include <malloc.h>
 #include <pthread.h>
 #include <signal.h>
 #include <sqlite3.h>
@@ -137,11 +136,7 @@ void *handle_connection(void *arg)
     int i;
     for (i = 0; i < 100; i++) {
       if (!messages[i]) {
-        messages[i] = malloc(query_len * sizeof(char));
-        size_t size = malloc_usable_size(messages[i]);
-        for (int j = 0; j < size; j++) {
-          messages[i][j] = 0;
-        }
+        messages[i] = calloc(query_len, sizeof(char));
         if (read(connected_socket_fd, messages[i], query_len) == -1) {
           dprintf(2, "read failed\n");
           exit(EXIT_FAILURE);
