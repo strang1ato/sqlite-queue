@@ -93,10 +93,15 @@ void *execute_queries(void *arg)
     pthread_mutex_lock(&lock);
     for (int i = 0; i < 100; i++) {
       if (messages[i]) {
+#ifdef DEBUG
         char *errmsg;
         if (sqlite3_exec(db, messages[i], NULL, NULL, &errmsg) != SQLITE_OK) {
           dprintf(2, "sqlite error: %s\n", errmsg);
         }
+#else
+        sqlite3_exec(db, messages[i], NULL, NULL, NULL);
+#endif
+
         free(messages[i]);
         messages[i] = 0;
       }
