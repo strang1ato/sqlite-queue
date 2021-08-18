@@ -148,7 +148,7 @@ void *handle_connection(void *arg)
     int i;
     for (i = 0; i < 100; i++) {
       if (!messages[i]) {
-        messages[i] = calloc(query_len, sizeof(char));
+        messages[i] = calloc(query_len, 1);
         if (read(socket_fd_and_handler_index[0], messages[i], query_len) == -1) {
           dprintf(2, "read failed\n");
           exit(EXIT_FAILURE);
