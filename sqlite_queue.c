@@ -10,8 +10,13 @@
 #include <unistd.h>
 
 sqlite3 *db;
+
 int socket_fd;
+
+pthread_t handlers[40];
+
 char *messages[100];  /* 100 is basically size of queue referneced in program name */
+
 pthread_mutex_t lock;
 
 void *execute_queries(void *);
@@ -72,12 +77,14 @@ int main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
 
-  static pthread_t handlers[40];
   while (1) {
     int connected_socket_fd = accept(socket_fd, NULL, NULL);
     for (int i = 0; i < 40; i++) {
       if (!handlers[i]) {
-        if (pthread_create(&handlers[i], NULL, &handle_connection, (void *)&connected_socket_fd)) {
+        int *socket_fd_and_handler_index = malloc(2 * sizeof(int));
+        socket_fd_and_handler_index[0] = connected_socket_fd;
+        socket_fd_and_handler_index[1] = i;
+        if (pthread_create(&handlers[i], NULL, &handle_connection, (void *)socket_fd_and_handler_index)) {
           dprintf(2, "pthread_create failed\n");
           exit(EXIT_FAILURE);
         }
@@ -114,10 +121,10 @@ void *execute_queries(void *arg)
 
 void *handle_connection(void *arg)
 {
-  int connected_socket_fd = *(int *)arg;
+  int *socket_fd_and_handler_index = (int *)arg;
   while (1) {
     char query_len_str[10];
-    int ret = read(connected_socket_fd, query_len_str, 10);
+    int ret = read(socket_fd_and_handler_index[0], query_len_str, 10);
     if (ret == -1) {
       dprintf(2, "read failed\n");
       exit(EXIT_FAILURE);
@@ -142,7 +149,7 @@ void *handle_connection(void *arg)
     for (i = 0; i < 100; i++) {
       if (!messages[i]) {
         messages[i] = calloc(query_len, sizeof(char));
-        if (read(connected_socket_fd, messages[i], query_len) == -1) {
+        if (read(socket_fd_and_handler_index[0], messages[i], query_len) == -1) {
           dprintf(2, "read failed\n");
           exit(EXIT_FAILURE);
         }
@@ -158,6 +165,9 @@ void *handle_connection(void *arg)
     }
     pthread_mutex_unlock(&lock);
   }
-  close(connected_socket_fd);
+  close(socket_fd_and_handler_index[0]);
+  handlers[socket_fd_and_handler_index[1]] = 0;
+
+  free(socket_fd_and_handler_index);
   return NULL;
 }
