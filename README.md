@@ -15,11 +15,11 @@ Run `sqlite-queue` binary with path to sqlite3 db file, like so:
 
 Each process/thread that wants to send query has to connect via [UNIX domain socket](https://man7.org/linux/man-pages/man7/unix.7.html) with `SOCK_SEQPACKET` type to: `/tmp/sqlite-queue.socket`.
 
-In order to send query process/thread has to write to socket two messages:
+In order to send query process/thread has to write to socket two text messages:
 - amount of bytes(characters) in query
 - and a text query
 
-In order to close socket connection write to socket these two messages:
+In order to close socket connection write to socket these two text messages (without quotation marks):
 - "4e"
 - "exit"
 
@@ -35,6 +35,6 @@ bash```
     sudo apt-get install build-essential sqlite3 libsqlite3-dev
 ```
 
-'cd' to cloned repository and run `make build`
+`cd` to cloned repository and run `make build`
 
 and move `sqlite-queue` binary to directory in `$PATH`
