@@ -27,6 +27,8 @@ In order to close socket connection write to socket these two text messages (wit
 
 ### Installation
 
+#### From source
+
 Clone repository:
 ```bash
   git clone https://github.com/strang1ato/sqlite-queue.git
@@ -38,5 +40,16 @@ Make sure that you have `gcc`, `make`, `sqlite3` and `libsqlite3-dev` installed 
 ```
 
 `cd` to cloned repository and run `make build`
+
+and move `sqlite-queue` binary to directory in `$PATH`
+
+#### x86_64 binary
+
+If your architecture is `x86_64` then feel free to install latest binary from [releases](https://github.com/strang1ato/sqlite-queue/releases)
+
+then make the file executable by for example:
+```bash
+  chmod +x <path-to-sqlite-queue>
+```
 
 and move `sqlite-queue` binary to directory in `$PATH`
