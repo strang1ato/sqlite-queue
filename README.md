@@ -1,5 +1,7 @@
 # sqlite-queue
 
+**:warning: This project is still in pre-alpha stage :warning:**
+
 `sqlite-queue` is a simple program that adds support for concurrent write queries to sqlite3
 
 ### How does it work?
