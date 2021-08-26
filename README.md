@@ -26,12 +26,12 @@ In order to close socket connection write to socket these two text messages (wit
 ### Installation
 
 Clone repository:
-bash```
+```bash
     git clone https://github.com/strang1ato/sqlite-queue.git
 ```
 
 Make sure that you have `gcc`, `make`, `sqlite3` and `libsqlite3-dev` installed (example for debian/ubuntu):
-bash```
+```bash
     sudo apt-get install build-essential sqlite3 libsqlite3-dev
 ```
 
