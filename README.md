@@ -15,7 +15,7 @@ Run `sqlite-queue` binary with path to sqlite3 db file, like so:
   sqlite-queue <path-to-db>
 ```
 
-Each process/thread that wants to send query has to connect via [UNIX domain socket](https://man7.org/linux/man-pages/man7/unix.7.html) with `SOCK_SEQPACKET` type,  to `/tmp/sqlite-queue.socket`
+Each process/thread that wants to send query has to connect via [UNIX domain socket](https://man7.org/linux/man-pages/man7/unix.7.html) with `SOCK_SEQPACKET` type, to `/tmp/sqlite-queue.socket`
 
 In order to send query process/thread has to write to socket two text messages:
 - amount of bytes(characters) in query
